@@ -1,0 +1,64 @@
+#import <UIKit/UIKit.h>
+#import "AlarmViewController.h"
+#import "AlarmTableViewCell.h"
+
+static UIBarButtonItem *alarmToggleButton;
+static BOOL alarmState = YES;
+static NSMutableArray *alarms;
+static UITableView *tableView;
+
+%hook AlarmViewController
+
+-(id)init
+{
+    self = %orig;
+    alarmToggleButton = [[UIBarButtonItem alloc] initWithTitle:@"Toggle Alarms" style:UIBarButtonItemStylePlain target:self action:@selector(alarmToggleButtonPressed)];
+    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.navigationItem.rightBarButtonItem,alarmToggleButton,nil];
+    alarms = [[NSMutableArray alloc] init];
+    return self;
+}
+
+-(id)tableView:(id)view cellForRowAtIndexPath:(id)indexPath
+{
+    if(!tableView)
+        tableView = view;
+    return %orig;
+}
+
+%new
+-(void)alarmToggleButtonPressed
+{
+    alarmState = !alarmState;
+    
+    for(Alarm *alarm in alarms)
+        [self activeChangedForAlarm:alarm active:alarmState];
+    [tableView reloadData];
+}
+
+-(void)dealloc
+{
+    NSLog(@"DEALLOCED");
+    %orig;
+}
+
+%end
+
+%hook Alarm
+
+-(id)initWithSettings:(id)settings
+{
+    id orig = %orig;
+    if (![alarms containsObject:orig])
+        [alarms addObject:orig];
+    return orig;
+}
+
+-(id)initWithDefaultValues
+{
+    id orig = %orig;
+    if (![alarms containsObject:orig])
+        [alarms addObject:orig];
+    return orig;
+}
+
+%end

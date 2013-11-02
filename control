@@ -1,0 +1,9 @@
+Package: com.thomasfinch.alarmcontrol
+Name: AlarmControl
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Quickly toggle all alarms on or off
+Maintainer: Thomas Finch
+Author: Thomas Finch
+Section: Tweaks
