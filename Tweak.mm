@@ -1,9 +1,10 @@
 #import <UIKit/UIKit.h>
+#import <objc/Runtime.h>
 #import "AlarmViewController.h"
 #import "AlarmTableViewCell.h"
 
 static UIBarButtonItem *alarmToggleButton;
-static BOOL alarmState = YES;
+static BOOL alarmState = YES, hasToggled = NO;
 static NSMutableArray *alarms;
 static UITableView *tableView;
 
@@ -28,17 +29,22 @@ static UITableView *tableView;
 %new
 -(void)alarmToggleButtonPressed
 {
+    if (!hasToggled)
+    {
+        int alarmOnCount = 0;
+        for (int i = 0; i < [alarms count]; i++)
+            if ([[alarms objectAtIndex:i] isActive])
+                alarmOnCount++;
+        
+        alarmState = (alarmOnCount >= [alarms count]-alarmOnCount);
+        hasToggled = YES;
+    }
+    
     alarmState = !alarmState;
     
     for(Alarm *alarm in alarms)
         [self activeChangedForAlarm:alarm active:alarmState];
     [tableView reloadData];
-}
-
--(void)dealloc
-{
-    NSLog(@"DEALLOCED");
-    %orig;
 }
 
 %end

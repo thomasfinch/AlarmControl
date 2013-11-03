@@ -7,7 +7,7 @@ TWEAK_NAME = AlarmControl
 AlarmControl_FILES = Tweak.xm
 AlarmControl_FRAMEWORKS = UIKit
 
-THEOS_DEVICE_IP = 192.168.1.3
+THEOS_DEVICE_IP = 192.168.1.80
 THEOS_BUILD_DIR = debs
 GO_EASY_ON_ME=1
 
